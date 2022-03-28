@@ -165,6 +165,7 @@ function home() {
       if (file_exists($collections_cache)) {
         $collections = json_decode(file_get_contents($collections_cache));
       } else {
+        $endpoint = $_ENV['endpoint'];
         $request_collections = Requests::get("$endpoint/api/v1/collections");
         if (
           $request_collections->success &&
@@ -184,7 +185,6 @@ function home() {
         }        
       }
     }
-
     return [
       'template' => 'home.html',
       'data' => [
