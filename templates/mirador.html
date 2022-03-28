@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <meta property="og:title" content="{{type | capitalize}}: {{title}}">
+  <title>{{title}}</title>
+  <script defer="defer" src="js/mirador.js"></script>
+  <link href="/static/css/mirador.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root" data-manifest="{{manifest}}"></div>
+{% endblock %}
