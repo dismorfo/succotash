@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
+  <title>DLTS Objects - Books, Maps and Photos</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <style>
     p.title {
@@ -15,12 +16,18 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .btn-reset {
+      padding-left: .3em;
+    }
+    .top-container {
+      margin-top: 2em;
+    }
   </style>
 {% endblock %}
 
 {% block content %}
 <section class="section">
-  <div class="container" style="margin-top: 2em;">
+  <div class="container top-container">
     <div class="row">
       <div class="col-auto">
         <label for="collectionslist" class="form-label">Filter by collection</label>
@@ -31,7 +38,7 @@
               <option data-identifier="{{item.identifier}}" value="{{item.title}} - {{item.partners[0].name}}">
             {% endfor %}
           </datalist>
-          <div class="input-group-append" style="padding-left: .3em;">
+          <div class="input-group-append btn-reset">
             <button id="button-rst" class="btn btn-outline-secondary" type="button">Reset</button>
           </div>
         </div>
@@ -68,6 +75,8 @@
   </div>
   <script>
 
+    const urlpath = `${window.location.origin}${window.location.pathname}`
+
     const filterByCollection = document.querySelector('#collectionslist')
 
     const filterByBooks = document.querySelector('#filter-books')
@@ -78,7 +87,6 @@
 
     filterByBooks.onchange = filterByMaps.onchange = filterByPhotos.onchange = () => {
       const currentPage = document.querySelector('#current-page')
-      const urlpath = `${window.location.origin}${window.location.pathname}`
       let page = 1
       if (currentPage) {
         page = currentPage.dataset.current
@@ -94,7 +102,6 @@
       for (let i = 0; i < options.length; i++) {
         if (options[i].value === val) {
           const currentPage = document.querySelector('#current-page')
-          const urlpath = `${window.location.origin}${window.location.pathname}`
           let page = 1
           if (currentPage) {
             page = currentPage.dataset.current
@@ -107,7 +114,7 @@
 
     document.querySelector('#button-rst').onclick = (e) => {
       e.preventDefault()
-      window.location.href = `${window.location.origin}${window.location.pathname}`
+      window.location.href = urlpath
     }
 
   </script>
