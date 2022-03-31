@@ -1,3 +1,4 @@
 .env
 content/*.json
 mirador/node_modules
+vendor

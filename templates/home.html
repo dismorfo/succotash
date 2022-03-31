@@ -15,62 +15,101 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-  </style>  
+  </style>
 {% endblock %}
 
 {% block content %}
 <section class="section">
-  <div class="container" style="margin-top: 2em;">    
+  <div class="container" style="margin-top: 2em;">
     <div class="row">
-      <div class="col">
+      <div class="col-auto">
+        <label for="collectionslist" class="form-label">Filter by collection</label>
         <div class="input-group">
-          <select id="filter-by-collection" class="form-select" aria-label="Filter by collection">
-            <option value="*">--- All resources ---</option>
+          <input class="form-control" data-identifier="{{dataList.identifier}}" value="{{dataList.label}}" list="collectionslistOptions" id="collectionslist" placeholder="Type to search...">
+          <datalist id="collectionslistOptions">
             {% for item in collections %}
-              <option value="{{item.identifier}}"{% if item.selected %} selected{% endif %}>{{item.title}} - {{item.partners[0].name}}</option>
+              <option data-identifier="{{item.identifier}}" value="{{item.title}} - {{item.partners[0].name}}">
             {% endfor %}
-          </select>
+          </datalist>
           <div class="input-group-append" style="padding-left: .3em;">
             <button id="button-rst" class="btn btn-outline-secondary" type="button">Reset</button>
           </div>
         </div>
         <br>
-        <table aria-labelledby="resources-table" class="table table-bordered table-striped table-hover is-fullwidth">
-          <thead>
-            <tr>
-              <th>Cover</th>
-              <th style="color: #17a2b8">Title</th>
-              <th>Type</th>
-              <th>Collections</th>
-              <th>Partners</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in items %}
-            <tr role="row">
-              <td aria-colindex="1" role="cell" data-noid="{{item.noid}}"><img class="thumb" loading="lazy" src="{{endpoint}}/api/image/{{item.type}}/{{item.identifier}}/1/full/70,/0/default.jpg" height="70px" alt="" title="{{item.title}}"></td>
-              <td aria-colindex="2" role="cell" class="title"><a href="{{appRoot}}/{{item.noid}}" data-identifier="{{item.identifier}}">{{item.title}}</a></td>          
-              <td aria-colindex="3" role="cell" class="has-text-centered">{{item.type}}</td>
-              <td aria-colindex="4" role="cell" class="has-text-centered" title="{{item.collections.code}}">{{item.collections.label}}</td>
-              <td aria-colindex="5" role="cell" class="has-text-centered" title="{{item.partners.code}}">{{item.partners.label}}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% include 'pagination.html' %}
+        <div class="row">
+          <div class="col-auto">
+            <p>Filter by type:</p>
+          </div>
+          <div class="col-auto">
+            <div class="form-check form-switch">
+              <input id="filter-books" class="form-check-input" type="checkbox" role="switch" {% if filter.books %}checked{% endif %}>
+              <label class="form-check-label" for="filter-books">Books</label>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-check form-switch">
+              <input id="filter-photos" class="form-check-input" type="checkbox" role="switch" {% if filter.photos %}checked{% endif %}>
+              <label class="form-check-label" for="filter-photos">Photos</label>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-check form-switch">
+              <input id="filter-maps" class="form-check-input" type="checkbox" role="switch" {% if filter.maps %}checked{% endif %}>
+              <label class="form-check-label" for="filter-maps">Maps</label>
+            </div>
+          </div>
+        </div>
+        <br>
+        {% if items %}
+          {% include 'results.html' %}
+        {% endif %}
       </div>
     </div>
   </div>
-
   <script>
-    document.querySelector('#filter-by-collection').onchange = (e) => {
-      e.preventDefault()
-      window.location.href = `${window.location.origin}?collection=${e.currentTarget.value}`
+
+    const filterByCollection = document.querySelector('#collectionslist')
+
+    const filterByBooks = document.querySelector('#filter-books')
+
+    const filterByMaps = document.querySelector('#filter-maps')
+
+    const filterByPhotos = document.querySelector('#filter-photos')
+
+    filterByBooks.onchange = filterByMaps.onchange = filterByPhotos.onchange = () => {
+      const currentPage = document.querySelector('#current-page')
+      const urlpath = `${window.location.origin}${window.location.pathname}`
+      let page = 1
+      if (currentPage) {
+        page = currentPage.dataset.current
+      }
+      window.location.href = `${urlpath}?collection=${filterByCollection.dataset.identifier}&books=${filterByBooks.checked}&maps=${filterByMaps.checked}&photos=${filterByPhotos.checked}`
     }
+
+    filterByCollection.addEventListener('input', (e) => {
+      const input = e.target
+      const val = input.value
+      const list = input.getAttribute('list')
+      const options = document.getElementById(list).childNodes
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === val) {
+          const currentPage = document.querySelector('#current-page')
+          const urlpath = `${window.location.origin}${window.location.pathname}`
+          let page = 1
+          if (currentPage) {
+            page = currentPage.dataset.current
+          }
+          window.location.href = `${urlpath}?collection=${options[i].dataset.identifier}&books=${filterByBooks.checked}&maps=${filterByMaps.checked}&photos=${filterByPhotos.checked}`          
+          break
+        }
+      }
+    })
+
     document.querySelector('#button-rst').onclick = (e) => {
       e.preventDefault()
-      window.location.href = window.location.origin
-    }    
+      window.location.href = `${window.location.origin}${window.location.pathname}`
+    }
+
   </script>
 </section>
 {% endblock %}

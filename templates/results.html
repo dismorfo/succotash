@@ -1,0 +1,23 @@
+<table aria-labelledby="resources-table" class="table table-bordered table-striped table-hover is-fullwidth">
+  <thead>
+    <tr>
+      <th>Cover</th>
+      <th style="color: #17a2b8">Title</th>
+      <th>Type</th>
+      <th>Collections</th>
+      <th>Partners</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+      <tr role="row">
+        <td aria-colindex="1" role="cell" data-noid="{{item.noid}}"><img class="thumb" loading="lazy" src="{{endpoint}}/api/image/{{item.type}}/{{item.identifier}}/1/full/70,/0/default.jpg" height="70px" alt="" title="{{item.title}}"></td>
+        <td aria-colindex="2" role="cell" class="title"><a href="{{appRoot}}/{{item.noid}}" data-identifier="{{item.identifier}}">{{item.title}}</a></td>
+        <td aria-colindex="3" role="cell" class="has-text-centered">{{item.type}}</td>
+        <td aria-colindex="4" role="cell" class="has-text-centered" title="{{item.collections.code}}">{{item.collections.label}}</td>
+        <td aria-colindex="5" role="cell" class="has-text-centered" title="{{item.partners.code}}">{{item.partners.label}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% include 'pagination.html' %}

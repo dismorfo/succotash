@@ -11,7 +11,7 @@
     {% set preItemHasEllipsis = false %}
     {% for i in range(1, maxPage) %}
       {% if i == currentPage %}
-        <li class="page-item active"><a class="page-link" aria-lasbel="Current page">{{i}} <span class="sr-only">(current)</span></a></li>
+        <li class="page-item active" id="current-page" data-current="{{i}}"><a class="page-link" aria-lalbel="Current page">{{i}} <span class="sr-only">(current)</span></a></li>
         {% set preItemHasEllipsis = false %}
       {% elseif (i <= 1 + pageRange) or (i >= maxPage - pageRange) or ((currentPage - pageRange <= i) and (i <= currentPage + pageRange)) %}
         <li class="page-item"><a class="page-link" aria-lasbel="Goto page {{i}}" href="?page={{i}}&{{search}}">{{i}}</a></li>
